@@ -1,11 +1,11 @@
 # Paso 1: Usamos Maven para compilar el proyecto
-FROM maven:3.8.8-eclipse-temurin-11 AS build
+FROM maven:3.9-eclipse-temurin-17 AS build
 WORKDIR /app
 COPY . .
 RUN mvn clean package -DskipTests
 
 # Paso 2: Usamos Tomcat 10 que sí soporta Jakarta EE 10
-FROM tomcat:10.1-jdk11-temurin-slim
+FROM tomcat:10.1-jdk17-temurin-slim
 # Limpiamos las aplicaciones por defecto de Tomcat
 RUN rm -rf /usr/local/tomcat/webapps/*
 # Copiamos nuestro archivo .war generado en el paso anterior como la app principal (ROOT)
