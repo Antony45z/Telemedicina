@@ -5,7 +5,7 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 
 public class Conexion {
-    private static final String URL = "jdbc:mysql://roundhouse.proxy.rlwy.net:31989/telemedicina?useSSL=false&useTimezone=true&serverTimezone=America/Lima&allowPublicKeyRetrieval=true";
+    private static final String URL = "jdbc:mysql://roundhouse.proxy.rlwy.net:31989/telemedicina?useSSL=false&useTimezone=true&serverTimezone=America/Lima&allowPublicKeyRetrieval=true&connectionCollation=utf8mb4_general_ci";
     private static final String USER = "root";
     private static final String PASSWORD = "NjlJcQzPKHhxaBBdSFDjsZvRTOqBnYAZ";
 
