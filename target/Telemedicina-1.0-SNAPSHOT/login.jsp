@@ -6,6 +6,7 @@
     <title>Telemed</title>
     <link rel="stylesheet" href="estilo/estilo.css">
     <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.2.0/crypto-js.min.js"></script>
     <style>
 
         .popup-error {
@@ -99,16 +100,14 @@
             <form action="SvLogin" method="post">
 
                 <input type="email"
-                        name="correo"
-                        id="correo"
-                        placeholder="Correo electrónico"
-                        required
-                        maxlength="100"
-                        pattern="^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$"
-                        title="Ingrese un correo válido">
-
+                    name="correo"
+                    id="correo"
+                    placeholder="Correo electrónico"
+                    required
+                    maxlength="100"
+                    pattern="^[A-Za-z0-9+_.\-]+@[A-Za-z0-9.\-]+\.[A-Za-z]{2,}$"
+                    title="Ingrese un correo válido">
                  <input type="password"
-                        name="password"
                         id="password"
                         placeholder="Contraseña"
                         required
@@ -116,6 +115,10 @@
                         maxlength="45"
                         pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&_]).{8,45}$"
                         title="La contraseña debe tener mayúscula, minúscula, número y símbolo">
+                 
+                <input type="hidden"
+                       name="password"
+                       id="passwordCifrada">
                 <div class="g-recaptcha"
          data-sitekey="6Lcms-ssAAAAABhjtOVndSvloUl5EWxvcZ0KUmlk
 "></div>
@@ -173,8 +176,37 @@
 
             return;
         }
+                const claveAES = CryptoJS.enc.Utf8.parse("Telemed2026Clave");
 
-    });
+const iv = CryptoJS.enc.Utf8.parse("1234567890123456");
+
+
+const cifrado = CryptoJS.AES.encrypt(
+    password,
+    claveAES,
+    {
+        iv: iv,
+        mode: CryptoJS.mode.CBC,
+        padding: CryptoJS.pad.Pkcs7
+    }
+);
+
+
+const passwordCifrada =
+    cifrado.ciphertext.toString(CryptoJS.enc.Base64);
+
+
+console.log("Original:", password);
+console.log("Cifrada:", passwordCifrada);
+
+
+document.getElementById("passwordCifrada").value =
+    passwordCifrada;
+
+
+document.getElementById("password").value = "";
+
+});
 
 </script>
 </body>
