@@ -6,8 +6,8 @@ import java.sql.SQLException;
 
 public class Conexion {
     private static final String URL = "jdbc:mysql://roundhouse.proxy.rlwy.net:31989/telemedicina?useSSL=false&useTimezone=true&serverTimezone=America/Lima&allowPublicKeyRetrieval=true&connectionCollation=utf8mb4_general_ci";
-    private static final String USER = "root";
-    private static final String PASSWORD = "NjlJcQzPKHhxaBBdSFDjsZvRTOqBnYAZ";
+    private static final String USER = "consultas";
+    private static final String PASSWORD = "mBMsw6aAy[Af]q*u";
 
     public static Connection getConexion() throws SQLException {
         try {
