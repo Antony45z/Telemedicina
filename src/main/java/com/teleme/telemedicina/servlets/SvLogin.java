@@ -20,7 +20,10 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
-
+import javax.crypto.Cipher;
+import javax.crypto.spec.SecretKeySpec;
+import java.util.Base64;
+import java.nio.charset.StandardCharsets;
 import modelo.Usuario;
 
 @WebServlet(name = "SvLogin", urlPatterns = {"/SvLogin"})
@@ -33,7 +36,30 @@ protected void doPost(HttpServletRequest request, HttpServletResponse response)
         String contextPath = request.getContextPath();
 
         String correo = request.getParameter("correo");
-        String password = request.getParameter("password");
+
+        String passwordCifrada =
+                request.getParameter("password");
+        if(passwordCifrada == null || passwordCifrada.isEmpty()){
+
+            mostrarError(request,response,
+            "❌ Contraseña vacía.");
+
+            return;
+        }
+
+        String password = "";
+
+        try {
+
+            password = descifrarPassword(passwordCifrada);
+
+        } catch(Exception e){
+
+            mostrarError(request, response,
+                    "❌ Error procesando contraseña.");
+
+            return;
+        }
 
         //VALIDAR CAMPOS VACÍOS
         if (correo == null || correo.trim().isEmpty()
@@ -381,5 +407,58 @@ protected void doPost(HttpServletRequest request, HttpServletResponse response)
         }
 
         return false;
+    }
+    private String descifrarPassword(String passwordCifrada) throws Exception {
+
+
+        String clave =
+                "Telemed2026Clave";
+
+
+        String ivTexto =
+                "1234567890123456";
+
+
+        SecretKeySpec key =
+                new SecretKeySpec(
+                        clave.getBytes(StandardCharsets.UTF_8),
+                        "AES"
+                );
+
+
+        javax.crypto.spec.IvParameterSpec iv =
+                new javax.crypto.spec.IvParameterSpec(
+                        ivTexto.getBytes(StandardCharsets.UTF_8)
+                );
+
+
+        Cipher cipher =
+                Cipher.getInstance(
+                        "AES/CBC/PKCS5Padding"
+                );
+
+
+        cipher.init(
+                Cipher.DECRYPT_MODE,
+                key,
+                iv
+        );
+
+
+        byte[] passwordBytes =
+                Base64.getDecoder()
+                .decode(passwordCifrada);
+
+
+
+        byte[] resultado =
+                cipher.doFinal(passwordBytes);
+
+
+
+        return new String(
+                resultado,
+                StandardCharsets.UTF_8
+        );
     }
 }
