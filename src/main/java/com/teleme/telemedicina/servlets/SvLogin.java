@@ -50,7 +50,8 @@ protected void doPost(HttpServletRequest request, HttpServletResponse response)
         String password = "";
 
         try {
-
+            System.out.println("PASSWORD RECIBIDA:");
+            System.out.println(passwordCifrada);
             password = descifrarPassword(passwordCifrada);
 
         } catch(Exception e){
