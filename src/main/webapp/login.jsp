@@ -109,7 +109,6 @@
                         title="Ingrese un correo válido">
 
                  <input type="password"
-        name="password"
         id="password"
         placeholder="Contraseña"
         required
@@ -117,7 +116,12 @@
         maxlength="45"
         pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&_]).{8,45}$"
         title="La contraseña debe tener mayúscula, minúscula, número y símbolo">
-
+<input type="hidden"
+                       name="password"
+                       id="passwordCifrada">
+                <div class="g-recaptcha"
+         data-sitekey="6Lcms-ssAAAAABhjtOVndSvloUl5EWxvcZ0KUmlk
+"></div>
 <div style="text-align:left; margin-top:-5px; margin-bottom:10px; color:white; font-size:14px;">
     <input type="checkbox" id="mostrarPassword" style="width:auto; margin-right:5px;">
     <label for="mostrarPassword">Mostrar contraseña</label>
