@@ -100,25 +100,28 @@
             <form action="SvLogin" method="post">
 
                 <input type="email"
-                    name="correo"
-                    id="correo"
-                    placeholder="Correo electrónico"
-                    required
-                    maxlength="100"
-                    pattern="^[A-Za-z0-9+_.\-]+@[A-Za-z0-9.\-]+\.[A-Za-z]{2,}$"
-                    title="Ingrese un correo válido">
-                 <input type="password"
-                        id="password"
-                        placeholder="Contraseña"
+                        name="correo"
+                        id="correo"
+                        placeholder="Correo electrónico"
                         required
-                        minlength="8"
-                        maxlength="45"
-                        pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&_]).{8,45}$"
-                        title="La contraseña debe tener mayúscula, minúscula, número y símbolo">
-                 
-                <input type="hidden"
-                       name="password"
-                       id="passwordCifrada">
+                        maxlength="100"
+                        pattern="^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$"
+                        title="Ingrese un correo válido">
+
+                 <input type="password"
+        name="password"
+        id="password"
+        placeholder="Contraseña"
+        required
+        minlength="8"
+        maxlength="45"
+        pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&_]).{8,45}$"
+        title="La contraseña debe tener mayúscula, minúscula, número y símbolo">
+
+<div style="text-align:left; margin-top:-5px; margin-bottom:10px; color:white; font-size:14px;">
+    <input type="checkbox" id="mostrarPassword" style="width:auto; margin-right:5px;">
+    <label for="mostrarPassword">Mostrar contraseña</label>
+</div>
                 <div class="g-recaptcha"
          data-sitekey="6Lcms-ssAAAAABhjtOVndSvloUl5EWxvcZ0KUmlk
 "></div>
@@ -138,7 +141,10 @@
 <script>
 
     const form = document.querySelector("form");
-
+document.getElementById("mostrarPassword").addEventListener("change", function () {
+    const input = document.getElementById("password");
+    input.type = this.checked ? "text" : "password";
+});
     form.addEventListener("submit", function(e){
 
         const correo =
@@ -206,7 +212,7 @@ document.getElementById("passwordCifrada").value =
 
 document.getElementById("password").value = "";
 
-});
+    });
 
 </script>
 </body>

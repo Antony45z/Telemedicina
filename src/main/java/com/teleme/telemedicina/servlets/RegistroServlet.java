@@ -107,8 +107,9 @@ public class RegistroServlet extends HttpServlet {
                 // 3) Confirmar o revertir transacción
                 if (exitoDetalle) {
                     con.commit();
-                    response.sendRedirect("login.jsp");
-                    return;
+    request.setAttribute("registroExitoso", true);
+    request.getRequestDispatcher("registro.jsp").forward(request, response);
+    return;
                 } else {
                     con.rollback();
                     request.setAttribute("mensaje", "Error al registrar los datos adicionales. Intenta nuevamente.");

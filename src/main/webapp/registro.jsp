@@ -129,7 +129,7 @@
                                         <option value="">Seleccionar</option>
                                         <option value="Masculino" <%= checkParam(request, "genero", "Masculino") %>>Masculino</option>
                                         <option value="Femenino" <%= checkParam(request, "genero", "Femenino") %>>Femenino</option>
-                                        <option value="Otro" <%= checkParam(request, "genero", "Otro") %>>Otro</option>
+                                        <option value="Otro" <%= checkParam(request, "genero", "Otro") %>>Prefiero no especificar</option>
                                     </select>
                                     <label for="genero"><i class="fas fa-venus-mars me-2"></i>Género</label>
                                 </div>
@@ -267,7 +267,7 @@
                             </div>
                         </div>
 
-                        <div class="mb-4">
+                        <div class="mb-2">
                             <div class="form-floating">
                                 <input type="password"
                                 class="form-control"
@@ -284,7 +284,12 @@ incluyendo mayúscula, minúscula, número y símbolo.
 </small>
                             </div>
                         </div>
-                        <div class="mb-4">
+                        <div class="mb-3 ms-1">
+                            <input type="checkbox" id="mostrarPassword" style="width:auto; margin-right:5px;">
+                            <label for="mostrarPassword" style="font-size:14px;">Mostrar contraseña</label>
+                        </div>
+
+                        <div class="mb-2">
                             <div class="form-floating">
                                 <input type="password"
                                 class="form-control"
@@ -296,6 +301,10 @@ incluyendo mayúscula, minúscula, número y símbolo.
                                 maxlength="30">
                                 <label for="confirmarPassword"><i class="fas fa-lock me-2"></i>Confirmar Contraseña</label>
                             </div>
+                        </div>
+                        <div class="mb-4 ms-1">
+                            <input type="checkbox" id="mostrarConfirmarPassword" style="width:auto; margin-right:5px;">
+                            <label for="mostrarConfirmarPassword" style="font-size:14px;">Mostrar contraseña</label>
                         </div>
 
                         <div class="mb-4">
@@ -324,6 +333,21 @@ incluyendo mayúscula, minúscula, número y símbolo.
     </div>
 </div>
 
+<!-- Modal de Registro Exitoso -->
+<div class="modal fade" id="modalExito" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content" style="border-radius: 15px;">
+      <div class="modal-body text-center p-4">
+        <i class="fas fa-check-circle text-success" style="font-size: 4rem;"></i>
+        <h4 class="mt-3 mb-2">¡Registro Exitoso!</h4>
+        <p class="text-muted mb-4">Tu cuenta ha sido creada correctamente.</p>
+        <button type="button" class="btn btn-primary px-4" onclick="window.location.href='login.jsp'">
+            Aceptar
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js" defer></script>
 <script defer>
@@ -341,6 +365,15 @@ incluyendo mayúscula, minúscula, número y símbolo.
     window.onload = function() {
         mostrarCampos();
     };
+
+    // MOSTRAR / OCULTAR CONTRASEÑA
+    document.getElementById("mostrarPassword").addEventListener("change", function () {
+        document.getElementById("password").type = this.checked ? "text" : "password";
+    });
+
+    document.getElementById("mostrarConfirmarPassword").addEventListener("change", function () {
+        document.getElementById("confirmarPassword").type = this.checked ? "text" : "password";
+    });
 
     document.getElementById('registroForm').addEventListener('submit', function(e){
 
@@ -395,5 +428,20 @@ incluyendo mayúscula, minúscula, número y símbolo.
         }
     });
 </script>
+
+<%
+    Boolean registroExitoso = (Boolean) request.getAttribute("registroExitoso");
+%>
+<% if (registroExitoso != null && registroExitoso) { %>
+<script defer>
+    document.addEventListener('DOMContentLoaded', function () {
+        var modalExito = new bootstrap.Modal(document.getElementById('modalExito'), {
+            backdrop: 'static', // no se cierra haciendo clic afuera
+            keyboard: false     // no se cierra con ESC
+        });
+        modalExito.show();
+    });
+</script>
+<% } %>
 </body>
 </html>
