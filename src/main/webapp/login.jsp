@@ -119,9 +119,6 @@
 <input type="hidden"
                        name="password"
                        id="passwordCifrada">
-                <div class="g-recaptcha"
-         data-sitekey="6Lcms-ssAAAAABhjtOVndSvloUl5EWxvcZ0KUmlk
-"></div>
 <div style="text-align:left; margin-top:-5px; margin-bottom:10px; color:white; font-size:14px;">
     <input type="checkbox" id="mostrarPassword" style="width:auto; margin-right:5px;">
     <label for="mostrarPassword">Mostrar contraseña</label>
