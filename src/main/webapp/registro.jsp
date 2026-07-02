@@ -89,12 +89,13 @@
                                 </div>
                             </div>
                         </div>
-
+                       
+                        <!--Ti-->
                         <div class="row">
                             <div class="col-md-6 mb-3">
                                 <div class="form-floating">
-                                    <%-- SELECT Tipo Documento: Usa la función checkParam para seleccionar la opción correcta --%>
-                                    <select class="form-select" id="tipoDocumento" name="tipoDocumento" required>
+                                    <%-- SELECT Tipo Documento --%>
+                                    <select class="form-select" id="tipoDocumento" name="tipoDocumento" required onchange="ajustarValidacionDocumento()">
                                         <option value="">Seleccionar</option>
                                         <option value="DNI" <%= checkParam(request, "tipoDocumento", "DNI") %>>DNI</option>
                                         <option value="CARNET_EXTRANJERIA" <%= checkParam(request, "tipoDocumento", "CARNET_EXTRANJERIA") %>>Carnet de Extranjería</option>
@@ -103,16 +104,16 @@
                                     <label for="tipoDocumento"><i class="fas fa-id-card me-2"></i>Tipo de Documento</label>
                                 </div>
                             </div>
+                            
                             <div class="col-md-6 mb-3">
                                 <div class="form-floating">
-                                    <%-- Campo Número Documento: Rellena el valor --%>
-                                    <input type="text" class="form-control" id="numeroDocumento" name="numeroDocumento" placeholder="Número de Documento" required maxlength="20" pattern="[A-Za-z0-9]+"
+                                    <%-- Campo Número Documento (Con style="max-width: 250px" para que no sea tan largo) --%>
+                                    <input type="text" class="form-control" style="max-width: 250px;" id="numeroDocumento" name="numeroDocumento" placeholder="Número de Documento" required
                                            value="<%= request.getParameter("numeroDocumento") != null ? request.getParameter("numeroDocumento") : "" %>">
                                     <label for="numeroDocumento"><i class="fas fa-hashtag me-2"></i>Número de Documento</label>
                                 </div>
                             </div>
                         </div>
-
                         <div class="row">
                             <div class="col-md-6 mb-3">
                                 <div class="form-floating">
@@ -220,6 +221,20 @@
                                         <label for="altura">Altura (m)</label>
                                     </div>
                                 </div>
+                                        
+                                <div class="mb-3 mt-4">
+                                    <div class="form-floating">
+                                        <textarea class="form-control" id="alergias" name="alergias" placeholder="Alergias" style="height: 80px" maxlength="250"><%= request.getParameter("alergias") != null ? request.getParameter("alergias") : "" %></textarea>
+                                        <label for="alergias"><i class="fas fa-exclamation-triangle me-2"></i>Alergias</label>
+                                    </div>
+                                </div>
+
+                                <div class="mb-3">
+                                    <div class="form-floating">
+                                        <textarea class="form-control" id="historialClinico" name="historialClinico" placeholder="Historial Clínico" style="height: 100px" maxlength="500"><%= request.getParameter("historialClinico") != null ? request.getParameter("historialClinico") : "" %></textarea>
+                                        <label for="historialClinico"><i class="fas fa-file-medical-alt me-2"></i>Historial Clínico</label>
+                                    </div>
+                                </div>
                             </div>
                         </div>
 
@@ -279,9 +294,8 @@
                                 maxlength="30">
                                 <label for="password"><i class="fas fa-lock me-2"></i>Contraseña</label>
                                 <small id="passwordHelp" class="text-muted">
-La contraseña debe tener entre 8 y 30 caracteres,
-incluyendo mayúscula, minúscula, número y símbolo.
-</small>
+                                    <!--La contraseña debe tener entre 8 y 30 caracteres, incluyendo mayúscula, minúscula, número y símbolo.-->
+                        </small>
                             </div>
                         </div>
                         <div class="mb-3 ms-1">
@@ -300,7 +314,7 @@ incluyendo mayúscula, minúscula, número y símbolo.
                                 minlength="8"
                                 maxlength="30">
                                 <label for="confirmarPassword"><i class="fas fa-lock me-2"></i>Confirmar Contraseña</label>
-                            </div>
+                        </div>
                         </div>
                         <div class="mb-4 ms-1">
                             <input type="checkbox" id="mostrarConfirmarPassword" style="width:auto; margin-right:5px;">
@@ -427,6 +441,42 @@ incluyendo mayúscula, minúscula, número y símbolo.
             return false;
         }
     });
+    //VALIDACION PARA TIPO DE DOCUMENTO 
+    function ajustarValidacionDocumento() {
+    const tipo = document.getElementById('tipoDocumento').value;
+    const inputDoc = document.getElementById('numeroDocumento');
+
+    switch(tipo) {
+        case 'DNI':
+            inputDoc.maxLength = 8;
+            inputDoc.pattern = "[0-9]{8}";
+            inputDoc.title = "El DNI debe tener 8 dígitos numéricos";
+            inputDoc.inputMode = "numeric";
+            break;
+        case 'CARNET_EXTRANJERIA':
+            inputDoc.maxLength = 9;
+            inputDoc.pattern = "[0-9]{9}";
+            inputDoc.title = "El Carnet de Extranjería debe tener 9 dígitos";
+            inputDoc.inputMode = "numeric";
+            break;
+        case 'PASAPORTE':
+            inputDoc.maxLength = 9;
+            inputDoc.pattern = "[A-Za-z0-9]{9}"; // Ajusta si el pasaporte tiene letras
+            inputDoc.title = "El pasaporte debe tener 9 caracteres";
+            inputDoc.inputMode = "text";
+            break;
+        default:
+            inputDoc.maxLength = 20;
+            inputDoc.pattern = "[A-Za-z0-9]+";
+            inputDoc.title = "Ingrese un número de documento válido";
+    }
+}
+    // Llamar a la función al cargar la página para mantener el estado si hubo error de validación
+    window.onload = function() {
+        mostrarCampos();
+        ajustarValidacionDocumento();
+    };
+
 </script>
 
 <%

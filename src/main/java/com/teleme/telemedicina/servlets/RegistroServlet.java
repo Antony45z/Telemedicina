@@ -21,6 +21,7 @@ import modelo.Usuario;
 import modelo.Paciente;
 import modelo.Medico;
 import at.favre.lib.crypto.bcrypt.BCrypt;
+import PRUEBASUNITARIAS.ValidacionesRegistro;
 
 @WebServlet("/RegistroServlet")
 public class RegistroServlet extends HttpServlet {
@@ -57,6 +58,13 @@ public class RegistroServlet extends HttpServlet {
                     ? LocalDate.parse(fechaStr) : null;
             
             String rol = request.getParameter("tipoUsuario"); // PACIENTE o MEDICO
+            
+            if (!validador.esDocumentoValido(tipoDocumento, numeroDocumento)) {
+                request.setAttribute("mensaje", "Formato de documento inválido o longitud incorrecta.");
+                request.setAttribute("tipoMensaje", "danger");
+                request.getRequestDispatcher("registro.jsp").forward(request, response);
+                return; // <--- ESTO ES LO QUE PROTEGE TU BASE DE DATOS
+            }
 
             Usuario usuario = new Usuario(
                     nombres, apellidos, correo, passwordEncriptada, telefono, direccion,
@@ -77,7 +85,7 @@ public class RegistroServlet extends HttpServlet {
 
                 if ("PROCESAR_DETALLE_PACIENTE".equals(flujoRol)) {
                     String grupoSanguineo = request.getParameter("grupoSanguineo");
-                    String allergies = request.getParameter("alergias");
+                    String alergias = request.getParameter("alergias");
                     String historialClinico = request.getParameter("historialClinico");
 
                     BigDecimal peso = (request.getParameter("peso") != null && !request.getParameter("peso").isEmpty())
@@ -86,7 +94,7 @@ public class RegistroServlet extends HttpServlet {
                     BigDecimal altura = (request.getParameter("altura") != null && !request.getParameter("altura").isEmpty())
                             ? new BigDecimal(request.getParameter("altura")) : null;
 
-                    Paciente paciente = new Paciente(idUsuario, historialClinico, allergies, grupoSanguineo, peso, altura);
+                    Paciente paciente = new Paciente(idUsuario, historialClinico, alergias, grupoSanguineo, peso, altura);
                     exitoDetalle = new PacienteDAO(con).registrarPaciente(paciente);
 
                 } else if ("PROCESAR_DETALLE_MEDICO".equals(flujoRol)) {

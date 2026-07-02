@@ -190,11 +190,8 @@
         <h3 class="card-title mb-4">
             Agendar Cita Médica
         </h3>
-
         <form action="SvRegistrarCita" method="post">
-
             <input type="hidden" name="idMedico" value="<%= idMedico %>">
-
             <!-- Paciente -->
             <div class="mb-3">
 
@@ -207,11 +204,9 @@
                        id="paciente"
                        value="<%= usuario.getNombre() + " " + usuario.getApellido() %>"
                        readonly>
-
             </div>
-
             <!-- Fecha -->
-            <div class="mb-3">
+            <div class="mb-3 position-relative">
 
                 <label for="fecha" class="form-label">
                     Fecha
@@ -222,10 +217,12 @@
                        id="fecha"
                        name="fecha"
                        value="<%= fechaSeleccionada != null ? fechaSeleccionada : "" %>"
-                       onchange="this.form.submit()"
+                       onchange="validarFechaRealTime(this)"
                        required>
 
-            </div>
+                <div id="error-fecha" class="text-danger small mt-1" style="display: none;">
+                    ⚠ La fecha no puede ser anterior al día de hoy.
+                </div>
 
             <!-- Hora -->
             <div class="mb-3">
@@ -238,24 +235,19 @@
                         id="hora"
                         name="hora"
                         required>
-
                     <%
                         if(fechaSeleccionada == null || fechaSeleccionada.isEmpty()){
                     %>
-
                         <option disabled selected>
                             Seleccione primero una fecha
                         </option>
-
                     <%
                         } else if(horas != null && !horas.isEmpty()) {
 
                     %>
-
                         <option value="">
                             Seleccione una hora
                         </option>
-
                     <%
                             for(String h : horas){
                     %>
@@ -263,7 +255,6 @@
                         <option value="<%= h %>">
                             <%= h %>
                         </option>
-
                     <%
                             }
                         } else {
@@ -272,7 +263,6 @@
                         <option disabled selected>
                             No hay horarios disponibles
                         </option>
-
                     <%
                         }
                     %>
@@ -305,6 +295,54 @@
 
     </div>
 </div>
+<!--  Validacion para que fecha no sea antigua a la del dia actual -->
+<script>
+function validarFechaRealTime(inputFecha) {
+    const fechaUsuarioStr = inputFecha.value;
+    if (!fechaUsuarioStr) return;
 
+    const hoy = new Date();
+    hoy.setHours(0, 0, 0, 0);
+
+    // Usamos el reemplazo de guiones por barras para evitar desfases de zona horaria en JS
+    const fechaUsuario = new Date(fechaUsuarioStr.replace(/-/g, '\/'));
+    fechaUsuario.setHours(0, 0, 0, 0);
+
+    const diferencia = fechaUsuario - hoy;
+    
+    const contenedorError = document.getElementById('error-fecha');
+    const botonEnviar = document.querySelector('button[type="submit"]');
+
+    // Si la diferencia es menor que 0, significa que es una fecha pasada
+    if (diferencia < 0) {
+        // Muestra la advertencia en rojo bajo la caja
+        contenedorError.style.display = 'block';
+        inputFecha.classList.add('is-invalid'); 
+        
+        // Bloquea el botón de enviar para que no mande datos incorrectos
+        if(botonEnviar) botonEnviar.disabled = true;
+    } else {
+        // Si la fecha es correcta (hoy o posterior), limpia los errores
+        contenedorError.style.display = 'none';
+        inputFecha.classList.remove('is-invalid');
+        if(botonEnviar) botonEnviar.disabled = false;
+        
+        // Ejecuta el envío al servlet para cargar las horas disponibles como lo hacía originalmente tu código
+        inputFecha.form.submit();
+    }
+}
+
+//Bloquear visualmente los días anteriores también al cargar la página
+document.addEventListener("DOMContentLoaded", function() {
+    const hoy = new Date();
+    const year = hoy.getFullYear();
+    const month = String(hoy.getMonth() + 1).padStart(2, '0');
+    const day = String(hoy.getDate()).padStart(2, '0');
+    const inputFecha = document.getElementById('fecha');
+    if(inputFecha) {
+        inputFecha.setAttribute('min', `${year}-${month}-${day}`);
+    }
+});
+</script>
 </body>
 </html>

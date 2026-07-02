@@ -54,4 +54,30 @@ public class ValidacionesRegistro {
         // En bases de datos, los IDs autoincrementables válidos inician desde 1
         return idUsuario > 0; // Éxito: Se puede registrar el detalle si es mayor a 0
     }
+    
+    /**
+     * PRUEBA 9: VALIDA LA LONGITUD Y FORMATO NUMÉRICO DEL DOCUMENTO
+     */
+    public boolean esDocumentoValido(String tipoDocumento, String numeroDocumento) {
+        if (numeroDocumento == null || numeroDocumento.trim().isEmpty()) {
+            return false;
+        }
+
+        // Validación de solo números
+        if (!numeroDocumento.matches("\\d+")) {
+            return false;
+        }
+
+        // Reglas según tipo de documento
+        switch (tipoDocumento.toUpperCase()) {
+            case "DNI":
+                return numeroDocumento.length() == 8;
+            case "CE": // Carnet de Extranjería
+                return numeroDocumento.length() >= 8 && numeroDocumento.length() <= 12;
+            case "PASAPORTE":
+                return numeroDocumento.length() >= 6 && numeroDocumento.length() <= 12;
+            default:
+                return false;
+        }
+    }
 }

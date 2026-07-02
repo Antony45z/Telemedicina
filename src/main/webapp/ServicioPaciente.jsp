@@ -75,14 +75,14 @@
         }
 
         // --- Lógica de Filtrado y Listado de Médicos ---
-        
-        if (filtroEsp != null && !filtroEsp.trim().isEmpty()) {
-            medicos = medicoDAO.filtrarMedicos(filtroEsp);
-        } else {
-            medicos = medicoDAO.listarMedicos();
-        }
-        
+        // --- Lógica de datos ---
+        medicoDAO = new MedicoDAO(con); // Ya tienes 'con' abierta arriba
+
+        // 1. Obtener especialidades para el menú
         especialidades = medicoDAO.listarEspecialidades();
+
+        // 2. Obtener lista de médicos (filtrada o completa)
+        medicos = medicoDAO.filtrarMedicos(filtroEsp);
 
 // El bloque de cierre del try-catch estará después del HTML/JSP dinámico.
 %>

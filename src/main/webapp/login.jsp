@@ -108,17 +108,17 @@
                         pattern="^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$"
                         title="Ingrese un correo válido">
 
-                 <input type="password"
-        id="password"
-        placeholder="Contraseña"
-        required
-        minlength="8"
-        maxlength="45"
-        pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&_]).{8,45}$"
-        title="La contraseña debe tener mayúscula, minúscula, número y símbolo">
-<input type="hidden"
-                       name="password"
-                       id="passwordCifrada">
+                    <input type="password"
+                    id="password"
+                    placeholder="Contraseña"
+                    required
+                    minlength="8"
+                    maxlength="45"
+                    pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&_]).{8,45}$"
+                    title="La contraseña debe tener mayúscula, minúscula, número y símbolo">
+                    <input type="hidden"
+                                   name="password"
+                                   id="passwordCifrada">
 <div style="text-align:left; margin-top:-5px; margin-bottom:10px; color:white; font-size:14px;">
     <input type="checkbox" id="mostrarPassword" style="width:auto; margin-right:5px;">
     <label for="mostrarPassword">Mostrar contraseña</label>
@@ -174,42 +174,33 @@ document.getElementById("mostrarPassword").addEventListener("change", function (
         }
 
         if(!regexPassword.test(password)){
-
             e.preventDefault();
-
             alert(
                 "La contraseña debe tener entre 8 y 45 caracteres, incluyendo mayúscula, minúscula, número y símbolo."
             );
-
             return;
         }
-                const claveAES = CryptoJS.enc.Utf8.parse("Telemed2026Clave");
+               const claveAES = CryptoJS.enc.Utf8.parse("Telemed2026Clave");
+            const iv = CryptoJS.enc.Utf8.parse("1234567890123456");
 
-const iv = CryptoJS.enc.Utf8.parse("1234567890123456");
-
-
-const cifrado = CryptoJS.AES.encrypt(
-    password,
-    claveAES,
-    {
-        iv: iv,
-        mode: CryptoJS.mode.CBC,
-        padding: CryptoJS.pad.Pkcs7
-    }
-);
+            const cifrado = CryptoJS.AES.encrypt(
+                password,
+                claveAES,
+                {
+                    iv: iv,
+                    mode: CryptoJS.mode.CBC,
+                    padding: CryptoJS.pad.Pkcs7 // JS usa PKCS7, Java lo leerá con PKCS5Padding de forma segura
+                }
+            );
 
 
-const passwordCifrada =
-    cifrado.ciphertext.toString(CryptoJS.enc.Base64);
+const passwordCifrada = cifrado.toString();
 
 
 console.log("Original:", password);
 console.log("Cifrada:", passwordCifrada);
 
-
-document.getElementById("passwordCifrada").value =
-    passwordCifrada;
-
+document.getElementById("passwordCifrada").value =  passwordCifrada;
 
 document.getElementById("password").value = "";
 

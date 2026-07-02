@@ -61,6 +61,23 @@ public class SvRegistrarCita extends HttpServlet {
 
                 return;
             }
+            
+            //Control de ingreso para fechas pasadas 
+            if (fechaStr != null && !fechaStr.isEmpty()) {
+            // La fecha que viene del formulario (YYYY-MM-DD)
+            java.time.LocalDate fechaSeleccionadaCita = java.time.LocalDate.parse(fechaStr);
+            java.time.LocalDate hoy = java.time.LocalDate.now();
+            
+                // Si la fecha seleccionada es anterior a hoy
+                if (fechaSeleccionadaCita.isBefore(hoy)) {
+                    request.setAttribute("mensaje", "❌ No se pueden agendar citas en fechas pasadas.");
+                    request.setAttribute("idMedico", idMedico);
+                    // Retornamos al formulario mostrando el error
+                    request.getRequestDispatcher("AgendarCitaPaciente.jsp").forward(request, response);
+                    return;
+                }
+            }
+            
             // 4. Concatenar fecha y hora
             String fechaCompletaStr = fechaStr + " " + horaStr;
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");

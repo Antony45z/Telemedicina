@@ -9,11 +9,9 @@
         return;
     }
 %>
-
 <%
     // 2. OBTENER OBJETO PACIENTE DE LA SESIÓN
     Paciente paciente = (Paciente) session.getAttribute("paciente");
-    
     // Si el objeto no existe, redirige (doble verificación de seguridad)
     if (paciente == null) {
         response.sendRedirect("login.jsp"); 
@@ -21,9 +19,7 @@
     }
     boolean esEdicion = true;
     String nombrePaciente = paciente.getNombre() + " " + paciente.getApellido();
-    
     //AGREGADO PARA LA FOTO DEL PACIENTE 
-    
 %>
 <!DOCTYPE html> 
 <html lang="es"> 

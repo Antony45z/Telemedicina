@@ -196,34 +196,50 @@ public class MedicoDAO {
 // MODIFICADO usando el codigo inicial y solo agregando  m.setFotoPerfil(rs.getBytes("foto_perfil"));
 public List<Medico> filtrarMedicos(String especialidad) {
     List<Medico> lista = new ArrayList<>();
-    String sql = "SELECT * FROM medicos m INNER JOIN usuarios u ON m.id_usuario = u.id_usuario " +
-                 "WHERE m.especialidad LIKE ?";
-
-    try (Connection con = this.con;
-         PreparedStatement ps = con.prepareStatement(sql)) {
-
-        ps.setString(1, "%" + especialidad + "%");
-
-        ResultSet rs = ps.executeQuery();
-
-        while (rs.next()) {
-            Medico m = new Medico();
-            m.setIdMedico(rs.getInt("id_medico"));
-            m.setNombre(rs.getString("nombre"));
-            m.setApellido(rs.getString("apellido"));
-            m.setEspecialidad(rs.getString("especialidad"));
-            m.setCentroLaboral(rs.getString("centro_laboral"));
-            m.setFotoPerfil(rs.getBytes("foto_perfil")); 
-            lista.add(m);
-        }
-
-    } catch (Exception e) {
-        e.printStackTrace();
+    // Si no hay filtro, busca a todos
+    if (especialidad == null || especialidad.trim().isEmpty()) {
+        try { return listarMedicos(); } catch (SQLException e) { e.printStackTrace(); }
     }
 
-    return lista;
-}
+    String sql = "SELECT m.id_medico, m.especialidad, m.centro_laboral, u.nombre, u.apellido, u.foto_perfil " +
+                 "FROM medicos m INNER JOIN usuarios u ON m.id_usuario = u.id_usuario " +
+                 "WHERE m.especialidad LIKE ?";
 
+    try (PreparedStatement ps = con.prepareStatement(sql)) {
+        ps.setString(1, "%" + especialidad + "%");
+        try (ResultSet rs = ps.executeQuery()) {
+            while (rs.next()) {
+                Medico m = new Medico();
+                m.setIdMedico(rs.getInt("id_medico"));
+                m.setNombre(rs.getString("nombre"));
+                m.setApellido(rs.getString("apellido"));
+                m.setEspecialidad(rs.getString("especialidad"));
+                m.setCentroLaboral(rs.getString("centro_laboral"));
+                m.setFotoPerfil(rs.getBytes("foto_perfil"));
+                lista.add(m);
+            }
+        }
+    } catch (Exception e) {
+        e.printStackTrace();
+        }
+        return lista;
+    }
+
+    public List<String> listarEspecialidades() {
+        List<String> especialidades = new ArrayList<>();
+        String sql = "SELECT DISTINCT especialidad FROM medicos WHERE especialidad IS NOT NULL AND especialidad <> ''";
+
+        // QUITAMOS el "try (Connection con = this.con)" porque eso cierra tu conexión global
+        try (PreparedStatement ps = con.prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
+            while (rs.next()) {
+                especialidades.add(rs.getString("especialidad"));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return especialidades;
+    }
 //esta es la mnodificacion por  geminis
 /*public List<Medico> filtrarMedicos(String especialidad) {
     List<Medico> lista = new ArrayList<>();
@@ -266,25 +282,4 @@ public List<Medico> filtrarMedicos(String especialidad) {
     return lista;
 }
 */
-public List<String> listarEspecialidades() {
-    List<String> especialidades = new ArrayList<>();
-
-    String sql = "SELECT DISTINCT especialidad FROM medicos WHERE especialidad IS NOT NULL AND especialidad <> ''";
-
-    try (Connection con = this.con;
-         PreparedStatement ps = con.prepareStatement(sql);
-         ResultSet rs = ps.executeQuery()) {
-
-        while (rs.next()) {
-            especialidades.add(rs.getString("especialidad"));
-        }
-
-    } catch (Exception e) {
-        e.printStackTrace();
-    }
-
-    return especialidades;
-}
-
-
 }
